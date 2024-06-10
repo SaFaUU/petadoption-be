@@ -46,6 +46,7 @@ const loginUser = async (payload: any) => {
     id: result.id,
     name: result.name,
     email: result.email,
+    role: result.role,
   });
 
   return {
@@ -53,6 +54,7 @@ const loginUser = async (payload: any) => {
     name: result.name,
     email: result.email,
     token: token,
+    role: result.role,
   };
 };
 
