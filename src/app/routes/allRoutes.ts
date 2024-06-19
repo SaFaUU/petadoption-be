@@ -6,6 +6,8 @@ import { PetController } from "../modules/pet/pet.controller";
 import { PetValidation } from "../modules/pet/pet.validation";
 import { AdoptionRequestController } from "../modules/adoptionRequest/adoptionRequest.controller";
 import { AdoptionRequestValidation } from "../modules/adoptionRequest/adoptionRequest.validation";
+import auth from "../middleware/auth";
+import { roles } from "../constants/common";
 
 const router = express.Router();
 
@@ -19,6 +21,15 @@ router.post(
   "/login",
   validateRequest(UserValidation.loginUser),
   UserController.loginUser
+);
+
+router.get("/users", auth(roles.ADMIN), UserController.getAllUsers);
+
+// Change Password
+router.put(
+  "/change-password",
+  validateRequest(UserValidation.changePassword),
+  UserController.changePassword
 );
 
 // Add and Update Pets

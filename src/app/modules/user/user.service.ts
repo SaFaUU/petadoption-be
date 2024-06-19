@@ -87,6 +87,7 @@ const updateProfile = async (token: string, payload: any) => {
   } catch (error) {
     throw new AppError(httpStatus.UNAUTHORIZED, "Unauthorized Access");
   }
+
   const result = await prisma.user.update({
     where: {
       id: decodedData.id,
@@ -105,9 +106,62 @@ const updateProfile = async (token: string, payload: any) => {
   return result;
 };
 
+const changePassword = async (token: string, payload: any) => {
+  let decodedData: any;
+  try {
+    decodedData = verifyToken(token, config.jwt_secret!);
+  } catch (error) {
+    throw new AppError(httpStatus.UNAUTHORIZED, "Unauthorized Access");
+  }
+
+  const userData = await prisma.user.findUniqueOrThrow({
+    where: {
+      email: decodedData.email as string,
+    },
+  });
+
+  const isValidPassword = await bcrypt.compare(
+    payload.oldPassword,
+    userData.password
+  );
+  if (!isValidPassword) {
+    throw new AppError(httpStatus.UNAUTHORIZED, "Unauthorized Access");
+  }
+
+  const salt = await bcrypt.genSalt(parseInt(config.salt_rounds!));
+  const hashedPassword: string = await bcrypt.hash(payload.newPassword, salt);
+  const result = await prisma.user.update({
+    where: {
+      id: decodedData.id,
+    },
+    data: {
+      password: hashedPassword,
+    },
+  });
+  return result;
+};
+
+const getAllUsers = async () => {
+  const result = await prisma.user.findMany({
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      role: true,
+      status: true,
+      createdAt: true,
+      updatedAt: true,
+    },
+  });
+
+  return result;
+};
+
 export const UserService = {
   registerIntoDB,
   loginUser,
   getProfile,
   updateProfile,
+  changePassword,
+  getAllUsers,
 };

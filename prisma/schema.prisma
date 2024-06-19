@@ -18,6 +18,11 @@ enum Role {
   ADMIN
 }
 
+enum UserStatus {
+  ACTIVE
+  DEACTIVATED
+}
+
 model User {
   id              String            @id() @default(uuid())
   name            String
@@ -27,6 +32,7 @@ model User {
   updatedAt       DateTime          @updatedAt
   adoptionRequest AdoptionRequest[]
   role            Role              @default(USER)
+  status          UserStatus        @default(ACTIVE)
 
   @@map("users")
 }

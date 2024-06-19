@@ -53,9 +53,35 @@ const updateProfile = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const changePassword = catchAsync(async (req: Request, res: Response) => {
+  const token = req.headers.authorization;
+
+  if (!token) {
+    throw new AppError(httpStatus.UNAUTHORIZED, "Unauthorized Access");
+  }
+  const result = await UserService.changePassword(token, req.body);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    message: "Password changed successfully",
+    data: result,
+  });
+});
+
+const getAllUsers = catchAsync(async (req: Request, res: Response) => {
+  const result = await UserService.getAllUsers();
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    message: "All users retrieved successfully",
+    data: result,
+  });
+});
+
 export const UserController = {
   registerIntoDB,
   loginUser,
   getProfile,
   updateProfile,
+  changePassword,
+  getAllUsers,
 };
