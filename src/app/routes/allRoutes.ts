@@ -25,6 +25,9 @@ router.post(
 
 router.get("/users", auth(roles.ADMIN), UserController.getAllUsers);
 
+router.put("/change-role", auth(roles.ADMIN), UserController.changeRole);
+router.put("/change-status", auth(roles.ADMIN), UserController.changeStatus);
+
 // Change Password
 router.put(
   "/change-password",

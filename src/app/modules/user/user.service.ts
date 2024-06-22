@@ -35,6 +35,10 @@ const loginUser = async (payload: any) => {
     },
   });
 
+  if (result.status === "DEACTIVATED") {
+    throw new AppError(httpStatus.UNAUTHORIZED, "User Deactivated");
+  }
+
   const isValidPassword = await bcrypt.compare(
     payload.password,
     result.password
@@ -42,6 +46,7 @@ const loginUser = async (payload: any) => {
   if (!isValidPassword) {
     throw new AppError(httpStatus.UNAUTHORIZED, "Unauthorized Access");
   }
+
   const token = generateToken({
     id: result.id,
     name: result.name,
@@ -157,6 +162,42 @@ const getAllUsers = async () => {
   return result;
 };
 
+const changeRole = async (token: string, payload: any) => {
+  let decodedData: any;
+  try {
+    decodedData = verifyToken(token, config.jwt_secret!);
+  } catch (error) {
+    throw new AppError(httpStatus.UNAUTHORIZED, "Unauthorized Access");
+  }
+  const result = await prisma.user.update({
+    where: {
+      id: payload.id,
+    },
+    data: {
+      role: payload.role,
+    },
+  });
+  return result;
+};
+
+const changeStatus = async (token: string, payload: any) => {
+  let decodedData: any;
+  try {
+    decodedData = verifyToken(token, config.jwt_secret!);
+  } catch (error) {
+    throw new AppError(httpStatus.UNAUTHORIZED, "Unauthorized Access");
+  }
+  const result = await prisma.user.update({
+    where: {
+      id: payload.id,
+    },
+    data: {
+      status: payload.status,
+    },
+  });
+  return result;
+};
+
 export const UserService = {
   registerIntoDB,
   loginUser,
@@ -164,4 +205,6 @@ export const UserService = {
   updateProfile,
   changePassword,
   getAllUsers,
+  changeRole,
+  changeStatus,
 };

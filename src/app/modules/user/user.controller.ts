@@ -77,6 +77,32 @@ const getAllUsers = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const changeRole = catchAsync(async (req: Request, res: Response) => {
+  const token = req.headers.authorization;
+  if (!token) {
+    throw new AppError(httpStatus.UNAUTHORIZED, "Unauthorized Access");
+  }
+  const result = await UserService.changeRole(token, req.body);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    message: "User role changed successfully",
+    data: result,
+  });
+});
+
+const changeStatus = catchAsync(async (req: Request, res: Response) => {
+  const token = req.headers.authorization;
+  if (!token) {
+    throw new AppError(httpStatus.UNAUTHORIZED, "Unauthorized Access");
+  }
+  const result = await UserService.changeStatus(token, req.body);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    message: "User status changed successfully",
+    data: result,
+  });
+});
+
 export const UserController = {
   registerIntoDB,
   loginUser,
@@ -84,4 +110,6 @@ export const UserController = {
   updateProfile,
   changePassword,
   getAllUsers,
+  changeRole,
+  changeStatus,
 };
