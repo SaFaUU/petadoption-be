@@ -45,8 +45,23 @@ const getAllPets = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const deletePet = catchAsync(async (req: Request, res: Response) => {
+  const token = req.headers.authorization;
+  const { petId } = req.params;
+  if (!token) {
+    throw new AppError(httpStatus.UNAUTHORIZED, "Unauthorized Access");
+  }
+  const result = await PetService.deletePet(token, petId);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    message: "Pet deleted successfully",
+    data: result,
+  });
+});
+
 export const PetController = {
   createPet,
   updatePet,
   getAllPets,
+  deletePet,
 };

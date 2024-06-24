@@ -38,15 +38,18 @@ router.put(
 // Add and Update Pets
 router.post(
   "/pets",
+  auth(roles.ADMIN),
   validateRequest(PetValidation.addPet),
   PetController.createPet
 );
 router.put(
   "/pets/:petId",
+  auth(roles.ADMIN),
   validateRequest(PetValidation.updatePet),
   PetController.updatePet
 );
 router.get("/pets", PetController.getAllPets);
+router.delete("/pets/:petId", auth(roles.ADMIN), PetController.deletePet);
 
 // Profile API
 router.get("/profile", UserController.getProfile);

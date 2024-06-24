@@ -144,8 +144,29 @@ const getAllPets = async (queryObj: Record<string, any>) => {
   };
 };
 
+const deletePet = async (token: string, petId: string) => {
+  let decodedData: any;
+  try {
+    decodedData = verifyToken(token, config.jwt_secret!);
+  } catch (error) {
+    throw new AppError(httpStatus.UNAUTHORIZED, "Unauthorized Access");
+  }
+
+  if (!decodedData) {
+    throw new AppError(httpStatus.UNAUTHORIZED, "Unauthorized Access");
+  } else {
+    const result = await prisma.pet.delete({
+      where: {
+        id: petId,
+      },
+    });
+    return result;
+  }
+};
+
 export const PetService = {
   createPet,
   updatePet,
   getAllPets,
+  deletePet,
 };
