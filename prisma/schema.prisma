@@ -64,7 +64,7 @@ model Pet {
   adoptionRequirements String
   gender               Gender
   healthStatus         HealthStatus      @default(EXCELLENT)
-  imageUrl             String?
+  imageUrl             String[]
   createdAt            DateTime          @default(now())
   updatedAt            DateTime          @updatedAt
   adoptionRequest      AdoptionRequest[]
