@@ -42,6 +42,13 @@ router.post(
   validateRequest(PetValidation.addPet),
   PetController.createPet
 );
+
+router.get(
+  "/pets/:petId",
+  auth(roles.ADMIN, roles.USER),
+  PetController.getSinglePet
+);
+
 router.put(
   "/pets/:petId",
   auth(roles.ADMIN),
@@ -61,7 +68,7 @@ router.put(
 
 // Post Adoption Request
 router.post(
-  "/adoption-request",
+  "/adoption-requests",
   validateRequest(AdoptionRequestValidation.submitAdoptionRequest),
   AdoptionRequestController.submitAdoptionRequest
 );
@@ -70,6 +77,14 @@ router.put(
   validateRequest(AdoptionRequestValidation.updateAdoptionRequestStatus),
   AdoptionRequestController.updateAdoptionRequest
 );
-router.get("/adoption-requests", AdoptionRequestController.getAdoptionRequests);
+router.get(
+  "/my-adoption-requests",
+  AdoptionRequestController.getMyAdoptionRequests
+);
+
+router.get(
+  "/adoption-requests",
+  AdoptionRequestController.getAllAdoptionRequests
+);
 
 export const AllRoutes = router;

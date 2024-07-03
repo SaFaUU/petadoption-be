@@ -13,6 +13,8 @@ const submitAdoptionRequest = catchAsync(
       throw new AppError(httpStatus.UNAUTHORIZED, "Unauthorized Access");
     }
 
+    console.log(req.body);
+
     const result = await AdoptionRequestService.submitAdoptionRequest(
       token,
       req.body
@@ -45,21 +47,45 @@ const updateAdoptionRequest = catchAsync(
   }
 );
 
-const getAdoptionRequests = catchAsync(async (req: Request, res: Response) => {
-  const token = req.headers.authorization;
-  if (!token) {
-    throw new AppError(httpStatus.UNAUTHORIZED, "Unauthorized Access");
+const getMyAdoptionRequests = catchAsync(
+  async (req: Request, res: Response) => {
+    const token = req.headers.authorization;
+    if (!token) {
+      throw new AppError(httpStatus.UNAUTHORIZED, "Unauthorized Access");
+    }
+    const result = await AdoptionRequestService.getMyAdoptionRequests(
+      token,
+      req.query
+    );
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      message: "Adoption requests retrieved successfully",
+      data: result,
+    });
   }
-  const result = await AdoptionRequestService.getAdoptionRequests(token);
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    message: "Adoption requests retrieved successfully",
-    data: result,
-  });
-});
+);
+
+const getAllAdoptionRequests = catchAsync(
+  async (req: Request, res: Response) => {
+    const token = req.headers.authorization;
+    if (!token) {
+      throw new AppError(httpStatus.UNAUTHORIZED, "Unauthorized Access");
+    }
+    const result = await AdoptionRequestService.getAllAdoptionRequests(
+      token,
+      req.query
+    );
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      message: "Adoption requests retrieved successfully",
+      data: result,
+    });
+  }
+);
 
 export const AdoptionRequestController = {
   submitAdoptionRequest,
   updateAdoptionRequest,
-  getAdoptionRequests,
+  getMyAdoptionRequests,
+  getAllAdoptionRequests,
 };

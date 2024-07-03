@@ -37,10 +37,32 @@ const updatePet = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getAllPets = catchAsync(async (req: Request, res: Response) => {
-  const result = await PetService.getAllPets(req.query);
+  const newQuery: Record<string, any> = {};
+
+  for (const [key, value] of Object.entries(req.query)) {
+    if (value !== "") {
+      newQuery[key] = value;
+    }
+  }
+
+  const result = await PetService.getAllPets(newQuery);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     message: "Pets retrieved successfully",
+    data: result,
+  });
+});
+
+const getSinglePet = catchAsync(async (req: Request, res: Response) => {
+  const token = req.headers.authorization;
+  const { petId } = req.params;
+  if (!token) {
+    throw new AppError(httpStatus.UNAUTHORIZED, "Unauthorized Access");
+  }
+  const result = await PetService.getSinglePet(token, petId);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    message: "Pet retrieved successfully",
     data: result,
   });
 });
@@ -64,4 +86,5 @@ export const PetController = {
   updatePet,
   getAllPets,
   deletePet,
+  getSinglePet,
 };

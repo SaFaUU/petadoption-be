@@ -5,7 +5,7 @@ import AppError from "../errors/AppError";
 import { jwtHelpers } from "../helpers/jwtHelpers";
 
 const auth = (...roles: string[]) => {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: any, res: Response, next: NextFunction) => {
     try {
       const token = req.headers.authorization;
 

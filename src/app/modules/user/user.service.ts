@@ -43,6 +43,7 @@ const loginUser = async (payload: any) => {
     payload.password,
     result.password
   );
+
   if (!isValidPassword) {
     throw new AppError(httpStatus.UNAUTHORIZED, "Unauthorized Access");
   }
@@ -57,9 +58,9 @@ const loginUser = async (payload: any) => {
   return {
     id: result.id,
     name: result.name,
+    role: result.role,
     email: result.email,
     token: token,
-    role: result.role,
   };
 };
 

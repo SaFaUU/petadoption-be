@@ -9,7 +9,8 @@ import { seedAdmin } from "./app/utils/seedAdmin";
 const app = express();
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: "https://petadoption-fe.vercel.app",
+    // origin: "http://localhost:3000",
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     preflightContinue: true,

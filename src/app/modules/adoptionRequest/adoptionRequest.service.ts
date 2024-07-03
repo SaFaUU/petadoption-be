@@ -65,7 +65,7 @@ const updateAdoptionRequest = async (token: string, id: string, data: any) => {
   return result;
 };
 
-const getAdoptionRequests = async (token: string) => {
+const getMyAdoptionRequests = async (token: string, queryObj: any) => {
   let decodedData: any;
   try {
     decodedData = verifyToken(token, config.jwt_secret!);
@@ -84,17 +84,78 @@ const getAdoptionRequests = async (token: string) => {
     },
   });
 
-  const result = await prisma.adoptionRequest.findMany({
+  const total = await prisma.adoptionRequest.count({
     where: {
       userId: user.id,
     },
   });
 
-  return result;
+  const page = parseInt(queryObj.page) || 1;
+  const limit = parseInt(queryObj.limit) || 10;
+  const skip = (page - 1) * limit;
+
+  const result = await prisma.adoptionRequest.findMany({
+    skip: skip,
+    take: limit,
+    include: {
+      user: true,
+      pet: true,
+    },
+    where: {
+      userId: user.id,
+    },
+  });
+
+  return {
+    meta: {
+      total,
+      page,
+      limit,
+    },
+    data: result,
+  };
+};
+
+const getAllAdoptionRequests = async (token: string, queryObj: any) => {
+  let decodedData: any;
+  try {
+    decodedData = verifyToken(token, config.jwt_secret!);
+  } catch (error) {
+    throw new AppError(httpStatus.UNAUTHORIZED, "Unauthorized Access");
+  }
+
+  if (!decodedData) {
+    throw new AppError(httpStatus.UNAUTHORIZED, "Unauthorized Access");
+  }
+
+  const total = await prisma.adoptionRequest.count();
+
+  const page = parseInt(queryObj.page) || 1;
+  const limit = parseInt(queryObj.limit) || 10;
+  const skip = (page - 1) * limit;
+
+  const result = await prisma.adoptionRequest.findMany({
+    skip: skip,
+    take: limit,
+    include: {
+      user: true,
+      pet: true,
+    },
+  });
+
+  return {
+    meta: {
+      total,
+      page,
+      limit,
+    },
+    data: result,
+  };
 };
 
 export const AdoptionRequestService = {
   submitAdoptionRequest,
   updateAdoptionRequest,
-  getAdoptionRequests,
+  getMyAdoptionRequests,
+  getAllAdoptionRequests,
 };

@@ -5,9 +5,7 @@ const submitAdoptionRequest = z.object({
     petId: z.string({
       required_error: "Pet Id field is required",
     }),
-    petOwnershipExperience: z.string({
-      required_error: "Pet Ownership Experience field is required",
-    }),
+    petOwnershipExperience: z.string({}).optional(),
   }),
 });
 

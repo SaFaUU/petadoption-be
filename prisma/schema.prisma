@@ -50,20 +50,31 @@ model User {
   @@map("users")
 }
 
+enum Size {
+  LARGE
+  MEDIUM
+  SMALL
+}
+
+enum Species {
+  DOG
+  CAT
+}
+
 model Pet {
   id                   String            @id() @default(uuid())
   name                 String
-  species              String
+  species              Species?
   breed                String
   age                  Int
-  size                 String
+  size                 Size
   location             String
   description          String
   temperament          String
   medicalHistory       String
   adoptionRequirements String
   gender               Gender
-  healthStatus         HealthStatus      @default(EXCELLENT)
+  healthStatus         HealthStatus
   imageUrl             String[]
   createdAt            DateTime          @default(now())
   updatedAt            DateTime          @updatedAt
@@ -73,11 +84,11 @@ model Pet {
 }
 
 model AdoptionRequest {
-  id                     String @id() @default(uuid())
+  id                     String  @id() @default(uuid())
   userId                 String
   petId                  String
-  status                 Status @default(PENDING)
-  petOwnershipExperience String
+  status                 Status  @default(PENDING)
+  petOwnershipExperience String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   pet  Pet  @relation(fields: [petId], references: [id], onDelete: Cascade, onUpdate: Cascade)
